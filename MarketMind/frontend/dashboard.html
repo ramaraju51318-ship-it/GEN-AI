@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>MarketMind Dashboard</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#0b1120;
+color:white;
+}
+
+/* LAYOUT */
+.container{
+display:flex;
+height:100vh;
+}
+
+/* SIDEBAR */
+.sidebar{
+width:260px;
+background:#020617;
+padding:25px;
+}
+
+.sidebar h2{
+margin-bottom:20px;
+}
+
+.menu{
+padding:12px;
+margin:6px 0;
+border-radius:8px;
+cursor:pointer;
+}
+
+.menu:hover{background:#111827;}
+.active{background:#2563eb;}
+
+/* MAIN */
+.main{
+flex:1;
+padding:35px;
+overflow:auto;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px;
+margin-bottom:25px;
+}
+
+.card{
+background:#111827;
+padding:20px;
+border-radius:12px;
+}
+
+.big{
+grid-column:span 2;
+}
+
+/* AI BOX */
+textarea{
+width:100%;
+height:110px;
+margin-top:10px;
+padding:10px;
+border-radius:8px;
+border:none;
+}
+
+button{
+margin-top:10px;
+padding:12px 18px;
+border:none;
+border-radius:8px;
+background:#22d3ee;
+cursor:pointer;
+font-weight:bold;
+}
+
+.output{
+margin-top:15px;
+background:#020617;
+padding:15px;
+border-radius:10px;
+white-space:pre-wrap;
+}
+
+/* TABLE */
+table{
+width:100%;
+margin-top:10px;
+border-collapse:collapse;
+}
+td,th{
+padding:10px;
+border-bottom:1px solid #1f2937;
+text-align:left;
+}
+
+/* HIDE SECTIONS */
+.section{display:none;}
+.show{display:block;}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+<h2>🧠 MarketMind</h2>
+
+<div class="menu active" onclick="show('assistant',this)">AI Assistant</div>
+<div class="menu" onclick="show('campaigns',this)">Campaign Analytics</div>
+<div class="menu" onclick="show('leads',this)">Lead Insights</div>
+<div class="menu" onclick="show('forecast',this)">Revenue Forecast</div>
+
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<h1>Sales Intelligence Dashboard</h1>
+
+<!-- METRICS -->
+<div class="cards">
+<div class="card"><h2>$128K</h2>Revenue</div>
+<div class="card"><h2>2.9x</h2>Growth</div>
+<div class="card"><h2>4,321</h2>Leads</div>
+<div class="card"><h2>76%</h2>Success</div>
+</div>
+
+<!-- AI ASSISTANT -->
+<div id="assistant" class="section show card big">
+<h2>AI Assistant</h2>
+<textarea id="prompt" placeholder="Ask AI to generate campaign, pitch, or insights..."></textarea>
+<button onclick="generate()">Generate AI</button>
+<div id="output" class="output"></div>
+</div>
+
+<!-- CAMPAIGNS -->
+<div id="campaigns" class="section card">
+<h2>Campaign Analytics</h2>
+<p>Instagram ads delivering highest ROI this month.</p>
+<ul>
+<li>Video ads CTR: 31%</li>
+<li>Influencer campaigns ROI: +2.3x</li>
+<li>Best audience: 18-30 tech buyers</li>
+</ul>
+</div>
+
+<!-- LEADS -->
+<div id="leads" class="section card">
+<h2>Lead Intelligence</h2>
+<table>
+<tr><th>Company</th><th>Score</th><th>Status</th></tr>
+<tr><td>TechNova</td><td>92</td><td>Hot</td></tr>
+<tr><td>UrbanKart</td><td>81</td><td>Warm</td></tr>
+<tr><td>SmartEdge</td><td>75</td><td>Warm</td></tr>
+<tr><td>NextWave</td><td>63</td><td>Cold</td></tr>
+</table>
+</div>
+
+<!-- FORECAST -->
+<div id="forecast" class="section card">
+<h2>Revenue Forecast</h2>
+<h1 style="color:#22d3ee">$410,000</h1>
+<p>Projected quarterly revenue based on campaign performance.</p>
+<ul>
+<li>Increase influencer marketing</li>
+<li>Retarget site visitors</li>
+<li>Expand to Tier-2 cities</li>
+</ul>
+</div>
+
+</div>
+</div>
+
+<script>
+function show(id,el){
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("show"));
+document.getElementById(id).classList.add("show");
+
+document.querySelectorAll(".menu").forEach(m=>m.classList.remove("active"));
+el.classList.add("active");
+}
+
+async function generate(){
+const text=document.getElementById("prompt").value;
+
+const res=await fetch("http://127.0.0.1:8000/generate",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({text:text})
+});
+
+const data=await res.json();
+document.getElementById("output").innerText=data.result;
+}
+</script>
+
+</body>
+</html>
